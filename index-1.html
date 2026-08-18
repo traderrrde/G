@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pump.fun - Volume Booster</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #000000;
+            min-height: 100vh;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            background-image: 
+                linear-gradient(rgba(0, 255, 136, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 136, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(50px, 50px); }
+        }
+
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(100px);
+            z-index: -1;
+            opacity: 0.4;
+        }
+
+        .orb-1 {
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(0, 255, 136, 0.3), transparent);
+            top: -200px;
+            right: -200px;
+            animation: orbFloat1 15s ease-in-out infinite;
+        }
+
+        .orb-2 {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(0, 200, 255, 0.2), transparent);
+            bottom: -100px;
+            left: -100px;
+            animation: orbFloat2 18s ease-in-out infinite;
+        }
+
+        @keyframes orbFloat1 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-50px, 50px) scale(1.1); }
+        }
+
+        @keyframes orbFloat2 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(50px, -30px) scale(0.9); }
+        }
+
+        .scanlines {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1000;
+            pointer-events: none;
+            opacity: 0.03;
+            background: repeating-linear-gradient(
+                0deg,
+                rgba(0, 0, 0, 0.15),
+                rgba(0, 0, 0, 0.15) 1px,
+                transparent 1px,
+                transparent 2px
+            );
+        }
+
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo-text {
+            font-size: 2.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00ff88 0%, #00cc6a 50%, #00ff88 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -2px;
+            text-shadow: 0 0 40px rgba(0, 255, 136, 0.3);
+            animation: logoPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes logoPulse {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.2); }
+        }
+
+        .logo-sub {
+            color: #00ff88;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            margin-top: 8px;
+            opacity: 0.8;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(0, 255, 136, 0.1);
+            border-radius: 16px;
+            padding: 32px;
+            backdrop-filter: blur(20px);
+            box-shadow: 
+                0 0 0 1px rgba(0, 255, 136, 0.05),
+                0 20px 50px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.5), transparent);
+        }
+
+        .input-wrapper {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .input-label {
+            display: block;
+            color: #888;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 16px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.4);
+            color: #fff;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #00ff88;
+            box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.1), 0 0 20px rgba(0, 255, 136, 0.2);
+        }
+
+        .input-field::placeholder {
+            color: #555;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            position: relative;
+            overflow: hidden;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+            color: #000;
+            box-shadow: 0 4px 20px rgba(0, 255, 136, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 255, 136, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-glow {
+            animation: buttonGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes buttonGlow {
+            0%, 100% { box-shadow: 0 4px 20px rgba(0, 255, 136, 0.3); }
+            50% { box-shadow: 0 4px 40px rgba(0, 255, 136, 0.6), 0 0 60px rgba(0, 255, 136, 0.2); }
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 3px solid rgba(0, 255, 136, 0.1);
+            border-top-color: #00ff88;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            position: relative;
+        }
+
+        .loading-spinner::after {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            right: -5px;
+            bottom: -5px;
+            border: 3px solid transparent;
+            border-top-color: rgba(0, 255, 136, 0.3);
+            border-radius: 50%;
+            animation: spin 2s linear infinite reverse;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            margin-top: 24px;
+            color: #00ff88;
+            font-size: 0.875rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .loading-status {
+            margin-top: 12px;
+            color: #555;
+            font-size: 0.75rem;
+        }
+
+        .progress-container {
+            width: 200px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 1px;
+            margin-top: 24px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #00ff88, #00cc6a);
+            width: 0%;
+            transition: width 0.3s ease;
+            box-shadow: 0 0 10px #00ff88;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            padding: 4px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #666;
+        }
+
+        .nav-tab.active {
+            background: rgba(0, 255, 136, 0.1);
+            color: #00ff88;
+            border: 1px solid rgba(0, 255, 136, 0.2);
+        }
+
+        .wallet-card {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.05), rgba(0, 200, 255, 0.05));
+            border: 1px solid rgba(0, 255, 136, 0.15);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .wallet-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.5), transparent);
+        }
+
+        .wallet-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .wallet-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 255, 136, 0.3);
+        }
+
+        .wallet-title {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .wallet-status {
+            font-size: 0.75rem;
+            color: #00ff88;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background: #00ff88;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+            box-shadow: 0 0 8px #00ff88;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .wallet-address-box {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 16px;
+            font-family: 'SF Mono', monospace;
+            font-size: 0.8rem;
+            color: #00ff88;
+            word-break: break-all;
+            position: relative;
+        }
+
+        .copy-icon {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 32px;
+            height: 32px;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.875rem;
+        }
+
+        .copy-icon:hover {
+            background: rgba(0, 255, 136, 0.2);
+            transform: scale(1.05);
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .btn-action {
+            padding: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.03);
+            color: #fff;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        .btn-action:hover {
+            border-color: rgba(0, 255, 136, 0.3);
+            background: rgba(0, 255, 136, 0.05);
+        }
+
+        .btn-action.deposit {
+            border-color: rgba(0, 255, 136, 0.3);
+            color: #00ff88;
+        }
+
+        .btn-action.withdraw {
+            border-color: rgba(255, 100, 100, 0.3);
+            color: #ff6464;
+        }
+
+        .usage-badge {
+            background: linear-gradient(135deg, rgba(255, 193, 7, 0.1), rgba(255, 160, 0, 0.1));
+            border: 1px solid rgba(255, 193, 7, 0.2);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .usage-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #ffc107;
+            margin-bottom: 8px;
+        }
+
+        .usage-count {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #fff;
+            line-height: 1;
+        }
+
+        .usage-text {
+            font-size: 0.75rem;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .ca-input-wrapper {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .ca-input {
+            width: 100%;
+            padding: 16px 18px;
+            padding-left: 50px;
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.4);
+            color: #fff;
+            font-size: 0.9rem;
+            font-family: 'SF Mono', monospace;
+            transition: all 0.3s ease;
+        }
+
+        .ca-input:focus {
+            outline: none;
+            border-color: #00ff88;
+            box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.1);
+        }
+
+        .ca-icon {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #00ff88;
+            font-size: 1rem;
+        }
+
+        .toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .toggle-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .toggle-icon {
+            width: 36px;
+            height: 36px;
+            background: rgba(0, 255, 136, 0.1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+        }
+
+        .toggle-text {
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .toggle-subtext {
+            font-size: 0.75rem;
+            color: #666;
+        }
+
+        .switch {
+            position: relative;
+            width: 52px;
+            height: 28px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #333;
+            transition: 0.3s;
+            border-radius: 28px;
+        }
+
+        .slider::before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 4px;
+            bottom: 4px;
+            background: #fff;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background: #00ff88;
+        }
+
+        input:checked + .slider::before {
+            transform: translateX(24px);
+        }
+
+        .duration-select {
+            width: 100%;
+            padding: 16px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.4);
+            color: #fff;
+            font-size: 0.9rem;
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2300ff88' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 18px center;
+        }
+
+        .duration-select:focus {
+            outline: none;
+            border-color: #00ff88;
+        }
+
+        .boosting-card {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.08), rgba(0, 200, 255, 0.05));
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            border-radius: 16px;
+            padding: 32px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .boosting-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00ff88, transparent);
+            animation: scanline 2s linear infinite;
+        }
+
+        @keyframes scanline {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .live-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            margin-bottom: 24px;
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: #00ff88;
+            border-radius: 50%;
+            animation: livePulse 1s infinite;
+        }
+
+        @keyframes livePulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(0.8); }
+        }
+
+        .live-text {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #00ff88;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .volume-number {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00ff88, #00cc6a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .volume-label {
+            font-size: 0.875rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .timer-display {
+            font-size: 2.5rem;
+            font-family: 'SF Mono', monospace;
+            font-weight: 700;
+            color: #ff4757;
+            margin: 24px 0;
+            text-shadow: 0 0 20px rgba(255, 71, 87, 0.3);
+        }
+
+        .target-ca {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(0, 255, 136, 0.1);
+            border-radius: 10px;
+            padding: 16px;
+            margin-top: 24px;
+        }
+
+        .target-label {
+            font-size: 0.7rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .target-value {
+            font-family: 'SF Mono', monospace;
+            font-size: 0.8rem;
+            color: #00ff88;
+            word-break: break-all;
+        }
+
+        .limit-card {
+            background: rgba(255, 71, 87, 0.05);
+            border: 1px solid rgba(255, 71, 87, 0.2);
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .limit-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+        }
+
+        .limit-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #ff4757;
+            margin-bottom: 8px;
+        }
+
+        .limit-text {
+            font-size: 0.875rem;
+            color: #666;
+        }
+
+        .footer-text {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 0.7rem;
+            color: #444;
+            line-height: 1.8;
+        }
+
+        .footer-text span {
+            color: #00ff88;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 16px;
+            }
+            .logo-text {
+                font-size: 2.2rem;
+            }
+            .card {
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-grid"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="scanlines"></div>
+
+    <div id="loadingScreen" class="loading-overlay hidden">
+        <div class="loading-spinner"></div>
+        <div class="loading-text" id="loadingTitle">Initializing</div>
+        <div class="loading-status" id="loadingStatus">Please wait</div>
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="loginSection" class="animate-in">
+            <div class="header">
+                <div class="logo-text">pump.fun</div>
+                <div class="logo-sub">Volume Booster</div>
+            </div>
+
+            <div class="card">
+                <div id="createView">
+                    <div class="input-wrapper">
+                        <label class="input-label">Create Password</label>
+                        <input type="password" class="input-field" id="newPass" placeholder="Enter password">
+                    </div>
+                    <div class="input-wrapper">
+                        <label class="input-label">Confirm Password</label>
+                        <input type="password" class="input-field" id="confirmPass" placeholder="Confirm password">
+                    </div>
+                    <button class="btn btn-primary btn-glow" onclick="createAccount()">Create Account</button>
+                </div>
+
+                <div id="loginView" class="hidden">
+                    <div class="input-wrapper">
+                        <label class="input-label">Enter Password</label>
+                        <input type="password" class="input-field" id="loginPass" placeholder="Enter your password">
+                    </div>
+                    <button class="btn btn-primary btn-glow" onclick="doLogin()">Access Dashboard</button>
+                </div>
+
+                <div class="footer-text" style="margin-top: 20px;">
+                    Secure connection established<br>
+                    <span>End-to-end encrypted</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="dashboardSection" class="hidden">
+            <div class="header" style="margin-bottom: 24px;">
+                <div class="logo-text" style="font-size: 1.8rem;">pump.fun</div>
+            </div>
+
+            <div class="nav-tabs">
+                <div class="nav-tab active" onclick="switchTab('wallet')">Wallet</div>
+                <div class="nav-tab" onclick="switchTab('booster')">Booster</div>
+            </div>
+
+            <div id="walletPanel" class="animate-in">
+                <div class="wallet-card">
+                    <div class="wallet-header">
+                        <div class="wallet-icon">💎</div>
+                        <div>
+                            <div class="wallet-title">Your Wallet</div>
+                            <div class="wallet-status">
+                                <div class="status-dot"></div>
+                                Connected
+                            </div>
+                        </div>
+                    </div>
+                    <div class="wallet-address-box">
+                        <span id="walletAddr">7xK2mB9pQ1zXyWvL7qN3Wy8tR5sU4jH2kM1nB6vC9aD</span>
+                        <div class="copy-icon" onclick="copyWallet()">📋</div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn-action deposit">📥 Deposit</button>
+                    <button class="btn-action withdraw">📤 Withdraw</button>
+                </div>
+
+                <div class="footer-text">
+                    All transactions are processed instantly<br>
+                    <span>Solana Network</span>
+                </div>
+            </div>
+
+            <div id="boosterPanel" class="hidden">
+                <div class="usage-badge">
+                    <div class="usage-label">Daily Usage</div>
+                    <div class="usage-count" id="remainingCount">3</div>
+                    <div class="usage-text">boosts remaining</div>
+                </div>
+
+                <div id="boosterForm" class="card" style="padding: 24px;">
+                    <div class="ca-input-wrapper">
+                        <span class="ca-icon">🔗</span>
+                        <input type="text" class="ca-input" id="caInput" placeholder="Enter token CA address">
+                    </div>
+
+                    <div class="toggle-row">
+                        <div class="toggle-info">
+                            <div class="toggle-icon">📊</div>
+                            <div>
+                                <div class="toggle-text">Real-time Tracking</div>
+                                <div class="toggle-subtext">Monitor volume live</div>
+                            </div>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="trackingToggle" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="input-wrapper">
+                        <label class="input-label">Boost Duration</label>
+                        <select class="duration-select" id="durationSelect">
+                            <option value="1">1 Minute</option>
+                            <option value="2">2 Minutes</option>
+                            <option value="3">3 Minutes</option>
+                            <option value="4">4 Minutes</option>
+                            <option value="5">5 Minutes (Max)</option>
+                        </select>
+                    </div>
+
+                    <button class="btn btn-primary btn-glow" onclick="startBoost()" style="margin-top: 8px;">
+                        Initialize Boost
+                    </button>
+                </div>
+
+                <div id="boostingView" class="hidden">
+                    <div class="boosting-card">
+                        <div class="live-indicator">
+                            <div class="live-dot"></div>
+                            <span class="live-text">Live</span>
+                        </div>
+
+                        <div class="volume-number" id="volNumber">$0</div>
+                        <div class="volume-label">Volume Generated</div>
+
+                        <div class="timer-display" id="timerDisp">05:00</div>
+
+                        <div class="target-ca">
+                            <div class="target-label">Target Contract</div>
+                            <div class="target-value" id="targetValue"></div>
+                        </div>
+                    </div>
+
+                    <div class="footer-text" style="margin-top: 16px;">
+                        Boost active • Monitor on <span>pump.fun</span>
+                    </div>
+                </div>
+
+                <div id="limitView" class="limit-card hidden">
+                    <div class="limit-icon">⏰</div>
+                    <div class="limit-title">Daily Limit Reached</div>
+                    <div class="limit-text">Come back tomorrow for more boosts</div>
+                </div>
+
+                <div class="footer-text">
+                    Trusted by <span>10,000+</span> traders<br>
+                    No deposit required • Instant activation
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const savedPass = localStorage.getItem('pumpUserPass');
+        let usageData = JSON.parse(localStorage.getItem('pumpUsage') || '{"count":0,"date":""}');
+        const today = new Date().toDateString();
+
+        if (usageData.date !== today) {
+            usageData = { count: 0, date: today };
+            localStorage.setItem('pumpUsage', JSON.stringify(usageData));
+        }
+
+        if (savedPass) {
+            document.getElementById('createView').classList.add('hidden');
+            document.getElementById('loginView').classList.remove('hidden');
+        }
+
+        function createAccount() {
+            const np = document.getElementById('newPass').value;
+            const cp = document.getElementById('confirmPass').value;
+
+            if (np.length < 4) {
+                alert('Password must be at least 4 characters');
+                return;
+            }
+            if (np !== cp) {
+                alert('Passwords do not match');
+                return;
+            }
+
+            localStorage.setItem('pumpUserPass', np);
+            localStorage.setItem('pumpUsage', JSON.stringify({ count: 0, date: today }));
+            showLoadingSequence();
+        }
+
+        function doLogin() {
+            const lp = document.getElementById('loginPass').value;
+            if (lp === savedPass) {
+                showLoadingSequence();
+            } else {
+                alert('Incorrect password');
+            }
+        }
+
+        function showLoadingSequence() {
+            const ls = document.getElementById('loadingScreen');
+            ls.classList.remove('hidden');
+
+            const steps = [
+                { title: 'Connecting to Pump.fun', status: 'Establishing secure connection', time: 800 },
+                { title: 'Verifying Access', status: 'Authentication in progress', time: 1500 },
+                { title: 'Creating Wallet', status: 'Generating Solana address', time: 2200 },
+                { title: 'Finalizing Setup', status: 'Almost ready', time: 3000 }
+            ];
+
+            let progress = 0;
+            const pb = document.getElementById('progressBar');
+
+            const interval = setInterval(() => {
+                progress += 1.5;
+                pb.style.width = progress + '%';
+
+                steps.forEach(step => {
+                    if (progress >= (step.time / 3000) * 100) {
+                        document.getElementById('loadingTitle').textContent = step.title;
+                        document.getElementById('loadingStatus').textContent = step.status;
+                    }
+                });
+
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        ls.classList.add('hidden');
+                        document.getElementById('loginSection').classList.add('hidden');
+                        document.getElementById('dashboardSection').classList.remove('hidden');
+                        updateUsageDisplay();
+                    }, 500);
+                }
+            }, 30);
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+
+            document.getElementById('walletPanel').classList.add('hidden');
+            document.getElementById('boosterPanel').classList.add('hidden');
+
+            if (tab === 'wallet') {
+                document.getElementById('walletPanel').classList.remove('hidden');
+            } else {
+                document.getElementById('boosterPanel').classList.remove('hidden');
+                updateUsageDisplay();
+            }
+        }
+
+        function copyWallet() {
+            const addr = document.getElementById('walletAddr').textContent;
+            navigator.clipboard.writeText(addr);
+            
+            const icon = event.target;
+            icon.textContent = '✓';
+            setTimeout(() => icon.textContent = '📋', 1500);
+        }
+
+        function updateUsageDisplay() {
+            const remaining = Math.max(0, 3 - usageData.count);
+            document.getElementById('remainingCount').textContent = remaining;
+
+            if (remaining === 0) {
+                document.getElementById('boosterForm').classList.add('hidden');
+                document.getElementById('limitView').classList.remove('hidden');
+            }
+        }
+
+        function startBoost() {
+            const ca = document.getElementById('caInput').value.trim();
+            if (!ca || ca.length < 10) {
+                alert('Please enter a valid CA address');
+                return;
+            }
+
+            if (usageData.count >= 3) {
+                alert('Daily limit reached');
+                return;
+            }
+
+            const ls = document.getElementById('loadingScreen');
+            ls.classList.remove('hidden');
+            document.getElementById('loadingTitle').textContent = 'Initializing Boost';
+            document.getElementById('loadingStatus').textContent = 'Please wait 20 seconds';
+
+            let prog = 0;
+            const pb = document.getElementById('progressBar');
+            const interval = setInterval(() => {
+                prog += 2;
+                pb.style.width = prog + '%';
+
+                if (prog >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        ls.classList.add('hidden');
+                        showBoosting(ca);
+                    }, 300);
+                }
+            }, 60);
+        }
+
+        function showBoosting(ca) {
+            document.getElementById('boosterForm').classList.add('hidden');
+            document.getElementById('boostingView').classList.remove('hidden');
+
+            document.getElementById('targetValue').textContent = ca;
+
+            usageData.count++;
+            localStorage.setItem('pumpUsage', JSON.stringify(usageData));
+            updateUsageDisplay();
+
+            const duration = parseInt(document.getElementById('durationSelect').value);
+            let seconds = duration * 60;
+
+            const timerInterval = setInterval(() => {
+                seconds--;
+                const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+                const s = (seconds % 60).toString().padStart(2, '0');
+                document.getElementById('timerDisp').textContent = `${m}:${s}`;
+
+                const current = parseInt(document.getElementById('volNumber').textContent.replace(/[^0-9]/g, '')) || 0;
+                const add = Math.floor(Math.random() * 1500) + 800;
+                document.getElementById('volNumber').textContent = '$' + (current + add).toLocaleString();
+
+                if (seconds <= 0) {
+                    clearInterval(timerInterval);
+                    document.getElementById('timerDisp').textContent = 'DONE';
+                    document.getElementById('timerDisp').style.color = '#00ff88';
+                }
+            }, 1000);
+        }
+
+        updateUsageDisplay();
+    </script>
+</body>
+</html>
